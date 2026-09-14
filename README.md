@@ -1,22 +1,36 @@
-# Treino da Semana
+# Treinos Pah — versão celular / PWA
 
-Aplicativo web simples para acompanhar os treinos de segunda a sexta.
+Esta versão foi feita para funcionar como aplicativo no celular.
 
-## Recursos
-- Treinos separados por dia.
-- Demonstração visual para cada exercício.
-- Botão para marcar cada exercício como concluído.
-- Progresso diário e semanal.
-- Salvamento automático no navegador (localStorage).
-- Reset automático quando uma nova semana começa (segunda-feira).
-- Botão manual "Resetar semana".
-- Responsivo para celular e computador.
+## O que tem
+- Segunda a sexta.
+- Ilustração desenhada de início e movimento para cada exercício.
+- Botão para concluir cada exercício.
+- Progresso do dia e da semana.
+- Salva tudo no próprio aparelho.
+- Reseta automaticamente quando começa uma nova semana (segunda-feira).
+- Botão manual de reset.
+- Layout otimizado para celular.
+- Pode ser instalado na tela inicial como aplicativo.
+- Funciona offline depois do primeiro carregamento.
 
-## Como publicar no GitHub Pages
-1. Envie `index.html`, `style.css`, `app.js` e a pasta `images` para o repositório.
-2. No GitHub, abra **Settings > Pages**.
-3. Em **Build and deployment**, escolha **Deploy from a branch**.
-4. Escolha a branch `main` e a pasta `/ (root)`.
-5. Salve e aguarde o link do site aparecer.
+## Publicar no GitHub Pages
+Envie todos estes arquivos e a pasta `images` para a raiz do repositório.
 
-Observação: as imagens incluídas são ilustrações demonstrativas. Elas podem ser substituídas depois por fotos ou GIFs específicos.
+Depois:
+1. GitHub > Settings.
+2. Pages.
+3. Build and deployment: `Deploy from a branch`.
+4. Branch: `main`.
+5. Pasta: `/ (root)`.
+6. Save.
+
+Quando o site estiver publicado em HTTPS, abra pelo celular.
+
+### Android
+No Chrome, o botão `Instalar app` aparecerá quando o navegador permitir a instalação.
+
+### iPhone
+Abra no Safari > Compartilhar > Adicionar à Tela de Início.
+
+Observação: as ilustrações são educativas e simplificadas; a execução correta deve respeitar orientação profissional quando necessário.

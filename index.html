@@ -2,39 +2,58 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111827">
-<title>Treino da Semana</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Treinos Pah">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="style.css">
+<title>Treinos Pah</title>
 </head>
 <body>
-<header class="topbar">
+<header class="app-header">
   <div>
-    <p class="eyebrow">MEU PLANO</p>
-    <h1>Treino da Semana</h1>
-    <p id="weekLabel" class="muted"></p>
+    <div class="brand">TP</div>
+    <div>
+      <p class="eyebrow">TREINOS PAH</p>
+      <h1>Minha semana</h1>
+      <p id="weekLabel" class="muted"></p>
+    </div>
   </div>
-  <button id="resetBtn" class="reset-btn" type="button">↻ Resetar semana</button>
+  <button id="installBtn" class="install-btn hidden" type="button">⬇ Instalar app</button>
 </header>
 
-<main class="wrap">
+<main class="app-shell">
   <section class="summary card">
-    <div>
-      <span class="muted">Progresso semanal</span>
-      <strong id="progressText">0% concluído</strong>
+    <div class="summary-top">
+      <div>
+        <span class="muted">Progresso semanal</span>
+        <strong id="progressText">0% concluído</strong>
+      </div>
+      <button id="resetBtn" class="icon-btn" type="button" aria-label="Resetar semana">↻</button>
     </div>
     <div class="progress"><span id="progressBar"></span></div>
   </section>
 
   <nav id="tabs" class="tabs" aria-label="Dias da semana"></nav>
+
   <section id="dayContent"></section>
 </main>
 
+<div id="installHelp" class="modal hidden">
+  <div class="modal-box">
+    <button id="closeInstallHelp" class="modal-close">×</button>
+    <h3>Adicionar à tela inicial</h3>
+    <p>No iPhone/iPad: abra no Safari, toque em <b>Compartilhar</b> e depois em <b>Adicionar à Tela de Início</b>.</p>
+    <p>No Android/Chrome, use o botão <b>Instalar app</b> quando ele aparecer.</p>
+  </div>
+</div>
+
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-<script>
-window.WORKOUTS = {"segunda": {"label": "Segunda", "subtitle": "Pernas + glúteos", "warmup": "8 min de bike", "cardio": "15 min", "exercises": [["agachamento", "Agachamento", "3×10–12", "Pés na largura dos ombros. Desça controlando o quadril e mantenha o peito aberto."], ["leg-press", "Leg press", "3×12", "Apoie os pés na plataforma, desça sem tirar o quadril do banco e empurre sem travar os joelhos."], ["cadeira-extensora", "Cadeira extensora", "3×12–15", "Ajuste o apoio acima dos tornozelos e estenda os joelhos com controle."], ["flexora", "Mesa/cadeira flexora", "3×12", "Flexione os joelhos puxando o apoio em direção ao corpo, sem tirar o quadril do banco."], ["elevacao-pelvica", "Elevação pélvica", "3×12", "Apoie as costas, empurre o quadril para cima e contraia os glúteos no topo."], ["abdutora", "Abdutora", "3×15", "Abra os joelhos contra a resistência e volte devagar, mantendo o tronco firme."]]}, "terca": {"label": "Terça", "subtitle": "Costas + braços", "warmup": "8 min", "cardio": "15–20 min", "exercises": [["puxada-frente", "Puxada frente", "3×10–12", "Puxe a barra em direção à parte superior do peito, mantendo os ombros para baixo."], ["remada", "Remada", "3×10–12", "Puxe as alças em direção ao abdômen e aproxime as escápulas sem balançar o tronco."], ["supino", "Supino/máquina para peito", "3×10–12", "Empurre a carga para frente/cima mantendo ombros apoiados e punhos alinhados."], ["elevacao-lateral", "Elevação lateral", "3×12–15", "Eleve os braços até a linha dos ombros, com cotovelos levemente flexionados."], ["rosca-biceps", "Rosca bíceps", "3×12", "Mantenha os cotovelos próximos ao corpo e flexione os braços sem embalo."], ["triceps", "Tríceps", "3×12", "Estenda os cotovelos mantendo os braços firmes ao lado do corpo."]]}, "quarta": {"label": "Quarta", "subtitle": "Pernas + glúteos", "warmup": "8 min", "cardio": "15 min", "exercises": [["leg-press", "Leg press", "3×12", "Apoie os pés na plataforma, desça controlando e empurre sem travar os joelhos."], ["passada", "Agachamento ou passada", "3×10", "Dê um passo à frente e desça os dois joelhos com controle, mantendo o tronco ereto."], ["cadeira-extensora", "Cadeira extensora", "3×12", "Estenda os joelhos com controle e evite bater a carga na volta."], ["flexora", "Flexora", "3×12", "Flexione os joelhos contra a resistência e retorne devagar."], ["elevacao-pelvica", "Elevação pélvica", "3×12", "Suba o quadril e faça uma pausa curta contraindo os glúteos."], ["abdutora", "Abdutora", "3×15", "Abra os joelhos, segure por um instante e volte controlando."]]}, "quinta": {"label": "Quinta", "subtitle": "Superiores", "warmup": "Aquecimento leve", "cardio": "15–20 min", "exercises": [["puxada-frente", "Puxada", "3×12", "Puxe a barra ao peito com controle, evitando jogar o tronco para trás."], ["remada", "Remada", "3×12", "Puxe em direção ao abdômen e mantenha o peito aberto."], ["supino", "Supino", "3×12", "Empurre a carga mantendo os ombros estáveis e controle a descida."], ["desenvolvimento", "Desenvolvimento de ombros", "3×12", "Empurre a carga acima da cabeça sem arquear excessivamente a lombar."], ["elevacao-lateral", "Elevação lateral", "3×15", "Eleve os braços até a altura dos ombros sem usar impulso."], ["rosca-biceps", "Bíceps", "3×12", "Flexione os cotovelos mantendo-os fixos junto ao corpo."], ["triceps", "Tríceps", "3×12", "Estenda os cotovelos por completo sem mover os ombros."]]}, "sexta": {"label": "Sexta", "subtitle": "Corpo inteiro — mais leve", "warmup": "Aquecimento leve", "cardio": "15–20 min", "exercises": [["agachamento", "Agachamento", "3×12", "Desça com controle, joelhos alinhados com os pés e coluna neutra."], ["leg-press", "Leg press", "3×12", "Desça até uma amplitude confortável e empurre de forma controlada."], ["puxada-frente", "Puxada", "3×12", "Puxe ao peito e retorne devagar, mantendo os ombros baixos."], ["remada", "Remada", "3×12", "Puxe as alças ao abdômen e evite arredondar as costas."], ["supino", "Supino", "3×12", "Empurre e retorne devagar, mantendo os ombros apoiados."], ["elevacao-pelvica", "Elevação pélvica", "3×12", "Eleve o quadril e contraia os glúteos no topo."], ["abdomen", "Abdômen", "3×15", "Contraia o abdômen e faça o movimento sem puxar o pescoço."]]}};
-</script>
+<script>window.WORKOUTS = {"segunda": {"label": "Segunda", "short": "SEG", "subtitle": "Pernas + glúteos", "warmup": "8 min de bike", "cardio": "15 min", "exercises": [["agachamento", "Agachamento", "3×10–12", "Pés na largura dos ombros. Desça o quadril mantendo joelhos alinhados e peito aberto."], ["leg-press", "Leg press", "3×12", "Pés firmes na plataforma. Desça com controle sem tirar o quadril do banco."], ["cadeira-extensora", "Cadeira extensora", "3×12–15", "Estenda os joelhos de forma controlada e volte sem deixar a carga bater."], ["flexora", "Mesa/cadeira flexora", "3×12", "Flexione os joelhos contra a resistência e retorne devagar."], ["elevacao-pelvica", "Elevação pélvica", "3×12", "Suba o quadril, contraia os glúteos no topo e desça controlando."], ["abdutora", "Abdutora", "3×15", "Abra os joelhos contra a resistência e volte devagar, sem perder a postura."]]}, "terca": {"label": "Terça", "short": "TER", "subtitle": "Costas + braços", "warmup": "8 min", "cardio": "15–20 min", "exercises": [["puxada-frente", "Puxada frente", "3×10–12", "Puxe a barra em direção ao peito mantendo ombros baixos e tronco firme."], ["remada", "Remada", "3×10–12", "Puxe as alças ao abdômen e aproxime as escápulas sem balançar o tronco."], ["supino", "Supino/máquina para peito", "3×10–12", "Empurre a carga mantendo ombros apoiados e controle a volta."], ["elevacao-lateral", "Elevação lateral", "3×12–15", "Eleve os braços até a altura dos ombros sem usar impulso."], ["rosca-biceps", "Rosca bíceps", "3×12", "Cotovelos junto ao corpo. Flexione os braços sem embalo."], ["triceps", "Tríceps", "3×12", "Mantenha os braços firmes e estenda os cotovelos completamente."]]}, "quarta": {"label": "Quarta", "short": "QUA", "subtitle": "Pernas + glúteos", "warmup": "8 min", "cardio": "15 min", "exercises": [["leg-press", "Leg press", "3×12", "Desça até uma amplitude confortável e empurre sem travar os joelhos."], ["passada", "Agachamento ou passada", "3×10", "Dê um passo à frente e desça os dois joelhos com o tronco ereto."], ["cadeira-extensora", "Cadeira extensora", "3×12", "Estenda os joelhos controlando a subida e a descida."], ["flexora", "Flexora", "3×12", "Flexione os joelhos contra a resistência e retorne devagar."], ["elevacao-pelvica", "Elevação pélvica", "3×12", "Suba o quadril e aperte os glúteos por um instante no topo."], ["abdutora", "Abdutora", "3×15", "Abra os joelhos, segure por um instante e volte controlando."]]}, "quinta": {"label": "Quinta", "short": "QUI", "subtitle": "Superiores", "warmup": "Aquecimento leve", "cardio": "15–20 min", "exercises": [["puxada-frente", "Puxada", "3×12", "Puxe a barra ao peito, mantendo o tronco firme e os ombros baixos."], ["remada", "Remada", "3×12", "Puxe em direção ao abdômen e mantenha o peito aberto."], ["supino", "Supino", "3×12", "Empurre a carga mantendo os ombros estáveis e controle a descida."], ["desenvolvimento", "Desenvolvimento de ombros", "3×12", "Empurre a carga acima da cabeça sem exagerar na curvatura da lombar."], ["elevacao-lateral", "Elevação lateral", "3×15", "Eleve os braços até a altura dos ombros com movimento controlado."], ["rosca-biceps", "Bíceps", "3×12", "Flexione os cotovelos mantendo-os próximos ao corpo."], ["triceps", "Tríceps", "3×12", "Estenda os cotovelos sem mover os ombros."]]}, "sexta": {"label": "Sexta", "short": "SEX", "subtitle": "Corpo inteiro — mais leve", "warmup": "Aquecimento leve", "cardio": "15–20 min", "exercises": [["agachamento", "Agachamento", "3×12", "Desça com controle, mantendo joelhos alinhados e coluna neutra."], ["leg-press", "Leg press", "3×12", "Use carga mais leve e mantenha o movimento controlado."], ["puxada-frente", "Puxada", "3×12", "Puxe ao peito e retorne devagar, mantendo os ombros baixos."], ["remada", "Remada", "3×12", "Puxe as alças ao abdômen sem arredondar as costas."], ["supino", "Supino", "3×12", "Empurre e retorne devagar, mantendo os ombros apoiados."], ["elevacao-pelvica", "Elevação pélvica", "3×12", "Eleve o quadril e contraia os glúteos no topo."], ["abdomen", "Abdômen", "3×15", "Contraia o abdômen e suba sem puxar o pescoço."]]}};</script>
 <script src="app.js"></script>
 </body>
 </html>
