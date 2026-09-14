@@ -41,7 +41,11 @@ const VIDEO_MATCHES={
 "abdomen":["bench crunch","sit-up","sit up","cable kneeling crunch","crunch"]
 };
 
-const EXERCISE_API="https://exercise-database.zenithfits.com/api/v1/exercises?limit=317";
+const EXERCISE_DATA_SOURCES=[
+  "https://raw.githubusercontent.com/arhxam/free-exercise-db-with-videos/main/data/exercises.json",
+  "https://raw.githubusercontent.com/amiinwani/free-exercise-db-with-videos/main/data/exercises.json",
+  "https://exercise-database.zenithfits.com/api/v1/exercises?limit=317"
+];
 let EXERCISE_DB=[];
 const STORAGE_KEY="treinosPah_v2";
 let deferredPrompt=null;
@@ -83,24 +87,41 @@ function normalizeText(s){
 function findVideoFor(key){
   if(!EXERCISE_DB.length) return null;
   const candidates=VIDEO_MATCHES[key]||[];
+  const hay=(x)=>normalizeText([x.name,...(x.aliases||[])].filter(Boolean).join(" "));
   for(const candidate of candidates){
     const target=normalizeText(candidate);
     let exact=EXERCISE_DB.find(x=>normalizeText(x.name)===target);
     if(exact) return exact;
-    let contains=EXERCISE_DB.find(x=>normalizeText(x.name).includes(target));
+    let contains=EXERCISE_DB.find(x=>hay(x).includes(target));
     if(contains) return contains;
   }
-  return null;
+  let best=null,bestScore=0;
+  for(const x of EXERCISE_DB){
+    const h=hay(x);
+    for(const c of candidates){
+      const tokens=normalizeText(c).split(" ").filter(t=>t.length>2);
+      const score=tokens.filter(t=>h.includes(t)).length;
+      if(score>bestScore){best=x;bestScore=score;}
+    }
+  }
+  return bestScore>=2?best:null;
 }
 function getVideoUrl(item){
   if(!item) return null;
-  const videos=item.videos||{};
-  return videos.female || videos.male || null;
+  const videos=item.videos||item.video||{};
+  if(typeof videos==="string") return videos;
+  if(Array.isArray(videos)){
+    const f=videos.find(v=>String(v.gender||v.sex||"").toLowerCase().includes("female")) || videos[0];
+    return typeof f==="string"?f:(f?.url||f?.src||null);
+  }
+  return videos.female || videos.femaleVideo || videos.woman || videos.male || videos.maleVideo || videos.man || videos.url || videos.src || null;
 }
 function getPoster(item){
   if(!item) return null;
-  const thumbs=item.thumbnails||{};
-  return thumbs.female || thumbs.male || null;
+  const t=item.thumbnails||item.thumbnail||item.images||{};
+  if(typeof t==="string") return t;
+  if(Array.isArray(t)) return t[0]?.url || t[0] || null;
+  return t.female || t.woman || t.male || t.man || t.url || t.src || null;
 }
 function hydrateVideos(){
   document.querySelectorAll(".exercise-media").forEach(box=>{
@@ -109,7 +130,7 @@ function hydrateVideos(){
     const url=getVideoUrl(item);
     if(!url) {
       const loading=box.querySelector(".video-loading");
-      if(loading) loading.textContent="Imagem demonstrativa";
+      if(loading) loading.textContent="Vídeo indisponível • imagem de apoio";
       return;
     }
     if(box.querySelector("video")) return;
@@ -121,6 +142,7 @@ function hydrateVideos(){
     video.muted=true;
     video.loop=true;
     video.autoplay=true;
+    video.controls=true;
     video.playsInline=true;
     video.preload="metadata";
     video.setAttribute("webkit-playsinline","");
@@ -134,35 +156,50 @@ function hydrateVideos(){
     video.addEventListener("error",()=>{
       video.remove();
       const loading=box.querySelector(".video-loading");
-      if(loading) loading.textContent="Imagem demonstrativa";
+      if(loading) loading.textContent="Vídeo indisponível • imagem de apoio";
     });
     box.insertBefore(video,box.firstChild);
   });
 }
 async function loadExerciseVideos(){
-  const cacheKey="treinosPah_exerciseDb_v1";
+  const cacheKey="treinosPah_exerciseDb_v2";
   try{
     const cached=localStorage.getItem(cacheKey);
     if(cached){
       const parsed=JSON.parse(cached);
-      if(parsed && Array.isArray(parsed.data) && Date.now()-parsed.savedAt<7*24*60*60*1000){
+      if(parsed && Array.isArray(parsed.data) && parsed.data.length && Date.now()-parsed.savedAt<7*24*60*60*1000){
         EXERCISE_DB=parsed.data;
         hydrateVideos();
         return;
       }
     }
   }catch(e){}
-  try{
-    const res=await fetch(EXERCISE_API,{mode:"cors"});
-    if(!res.ok) throw new Error("API indisponível");
-    const payload=await res.json();
-    EXERCISE_DB=Array.isArray(payload.data)?payload.data:(Array.isArray(payload)?payload:[]);
-    if(EXERCISE_DB.length){
-      try{localStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),data:EXERCISE_DB}))}catch(e){}
-      hydrateVideos();
-    }
-  }catch(e){
-    document.querySelectorAll(".video-loading").forEach(el=>el.textContent="Imagem demonstrativa");
+
+  let loaded=false;
+  for(const source of EXERCISE_DATA_SOURCES){
+    try{
+      const res=await fetch(source,{cache:"no-store",mode:"cors"});
+      if(!res.ok) continue;
+      const payload=await res.json();
+      const rows=Array.isArray(payload) ? payload :
+                 Array.isArray(payload.data) ? payload.data :
+                 Array.isArray(payload.exercises) ? payload.exercises : [];
+      if(rows.length){
+        EXERCISE_DB=rows;
+        loaded=true;
+        try{localStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),data:rows}))}catch(e){}
+        hydrateVideos();
+        break;
+      }
+    }catch(e){}
+  }
+
+  if(!loaded){
+    document.querySelectorAll(".video-loading").forEach(el=>{
+      el.textContent="▶ Toque para tentar carregar o vídeo";
+      el.style.cursor="pointer";
+      el.onclick=()=>{ localStorage.removeItem(cacheKey); loadExerciseVideos(); };
+    });
   }
 }
 

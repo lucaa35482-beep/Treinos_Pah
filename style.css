@@ -87,3 +87,7 @@ h1{font-size:24px;line-height:1.05;margin:0}
   .exercise-media{min-height:260px}
   .exercise-video,.exercise-media .fallback-img{height:100%;aspect-ratio:auto}
 }
+
+.exercise-video{background:#000}
+.exercise-video::-webkit-media-controls-panel{opacity:.92}
+.video-loading{max-width:calc(100% - 24px)}
