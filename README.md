@@ -38,9 +38,3 @@ Observação: as ilustrações são educativas e simplificadas; a execução cor
 
 ## Imagens dos exercícios
 Nesta versão, os cartões usam as imagens demonstrativas hospedadas pelo Strength Level para os exercícios correspondentes, com crédito visível no aplicativo. As imagens são carregadas pela internet e o navegador tenta armazená-las em cache depois de visualizadas.
-
-## Versão com vídeos
-Os cards tentam carregar vídeos curtos de demonstração a partir do Free Exercise DB with Videos.
-O aplicativo faz uma única consulta ao catálogo e guarda os dados por 7 dias no aparelho.
-Quando houver versão feminina, ela é priorizada; caso contrário, usa a masculina.
-Se o vídeo não puder ser carregado, a imagem demonstrativa permanece como fallback.

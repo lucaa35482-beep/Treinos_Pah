@@ -3,27 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827">
+<meta name="theme-color" content="#020914">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Treinos Pah">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=6">
-<title>Treinos Pah</title>
+<link rel="stylesheet" href="style.css?v=coliseu3">
+<title>Treinos da Pah • Academia Coliseu</title>
 </head>
 <body>
-<header class="app-header">
-  <div>
-    <div class="brand">TP</div>
-    <div>
-      <p class="eyebrow">TREINOS PAH</p>
-      <h1>Minha semana</h1>
-      <p id="weekLabel" class="muted"></p>
-    </div>
-  </div>
-  <button id="installBtn" class="install-btn hidden" type="button">⬇ Instalar app</button>
-</header>
+<header class="hero"><div class="hero-shade"></div><button id="installBtn" class="install-btn hidden" type="button">⬇ Instalar</button><div class="hero-logo"><img src="assets/academia-coliseu.jpg" alt="Academia Coliseu"></div><div class="hero-title"><span>TREINOS DA</span><strong>PAH</strong><small>DISCIPLINA HOJE • RESULTADOS SEMPRE</small></div></header>
 
 <main class="app-shell">
   <section class="summary card">
@@ -40,7 +30,7 @@
   <nav id="tabs" class="tabs" aria-label="Dias da semana"></nav>
 
   <section id="dayContent"></section>
-</main>
+</main><nav class="bottom-nav"><button class="active"><span>💪</span>Treino</button><button><span>▥</span>Progresso</button><button><span>▣</span>Semana</button><button><span>✓</span>Concluídos</button></nav>
 
 <div id="installHelp" class="modal hidden">
   <div class="modal-box">
@@ -54,6 +44,6 @@
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>window.WORKOUTS = {"segunda": {"label": "Segunda", "short": "SEG", "subtitle": "🍑 Glúteos + posterior", "warmup": "Aquecimento leve", "cardio": "10–15 min de caminhada", "exercises": [["elevacao-pelvica", "Hip thrust", "4×10–12", "Apoie as costas no banco, eleve o quadril e contraia os glúteos no topo."], ["flexora", "Cadeira flexora", "3×12", "Ajuste a máquina e flexione os joelhos com controle."], ["stiff", "Stiff com halteres", "3×10–12", "Leve o quadril para trás, mantenha a coluna neutra e os halteres próximos às pernas."], ["leg-press", "Leg press", "3×12", "Pés firmes na plataforma; desça com controle sem tirar o quadril do banco."], ["abdutora", "Cadeira abdutora", "4×15–20", "Abra os joelhos contra a resistência e retorne devagar."], ["gluteo-cabo", "Glúteo na máquina/cabo", "3×12–15 cada perna", "Empurre a perna para trás sem arquear a lombar e contraia o glúteo."]]}, "terca": {"label": "Terça", "short": "TER", "subtitle": "🦵 Pernas completas", "warmup": "Aquecimento leve", "cardio": "15 min de caminhada ou bicicleta", "exercises": [["agachamento-smith", "Agachamento no Smith ou livre", "3×10–12", "Desça com controle, joelhos alinhados com os pés e tronco firme."], ["leg-press", "Leg press", "3×12", "Desça controlando e empurre sem travar os joelhos."], ["cadeira-extensora", "Cadeira extensora", "3×12–15", "Estenda os joelhos e retorne devagar."], ["flexora", "Cadeira flexora", "3×12", "Flexione os joelhos contra a resistência e controle a volta."], ["passada", "Afundo/passada", "3×10 cada perna", "Dê um passo confortável e desça mantendo o joelho alinhado."], ["panturrilha", "Panturrilha", "3×15–20", "Eleve os calcanhares, contraia a panturrilha e desça controlando."]]}, "quarta": {"label": "Quarta", "short": "QUA", "subtitle": "💪 Braços + costas + barriga", "warmup": "Aquecimento leve", "cardio": "20 min de caminhada", "exercises": [["puxada-frente", "Puxada frontal", "3×10–12", "Puxe a barra em direção ao peito mantendo os ombros baixos."], ["remada", "Remada baixa", "3×10–12", "Puxe ao abdômen e aproxime as escápulas sem balançar o tronco."], ["supino", "Supino máquina", "3×10–12", "Empurre a carga e controle a volta mantendo os ombros apoiados."], ["elevacao-lateral", "Elevação lateral", "3×12–15", "Eleve os braços até a altura dos ombros sem impulso."], ["rosca-biceps", "Rosca bíceps", "3×12", "Mantenha os cotovelos junto ao corpo e flexione sem embalo."], ["triceps", "Tríceps na polia", "3×12", "Estenda os cotovelos mantendo os braços firmes."], ["abdomen", "Abdominal", "3×15", "Contraia o abdômen e evite puxar o pescoço."]]}, "quinta": {"label": "Quinta", "short": "QUI", "subtitle": "🍑 Glúteos — prioridade", "warmup": "Aquecimento leve", "cardio": "10–15 min de caminhada", "exercises": [["elevacao-pelvica", "Hip thrust", "4×8–12", "Eleve o quadril e faça uma contração forte dos glúteos no topo."], ["stiff", "Stiff", "3×10–12", "Quadril para trás, coluna neutra e movimento controlado."], ["abdutora", "Cadeira abdutora", "4×15–20", "Abra os joelhos contra a resistência e retorne lentamente."], ["gluteo-cabo", "Glúteo no cabo/máquina", "3×12–15", "Leve a perna para trás com controle e sem compensar com a lombar."], ["leg-press", "Leg press com pés mais altos", "3×12", "Posicione os pés um pouco mais altos na plataforma e use amplitude confortável."], ["flexora", "Cadeira flexora", "3×12", "Flexione os joelhos e controle a volta."]]}, "sexta": {"label": "Sexta", "short": "SEX", "subtitle": "🔥 Corpo inteiro + cardio", "warmup": "Aquecimento leve", "cardio": "20–25 min de cardio moderado", "exercises": [["agachamento-smith", "Agachamento no Smith", "3×12", "Mantenha os pés firmes, desça com controle e suba sem travar os joelhos."], ["leg-press", "Leg press", "3×12", "Desça controlando e empurre de forma contínua."], ["puxada-frente", "Puxada frontal", "3×12", "Puxe ao peito e retorne devagar."], ["supino", "Supino máquina", "3×12", "Empurre e retorne controlando a carga."], ["elevacao-lateral", "Elevação lateral", "3×15", "Eleve os braços até a linha dos ombros sem embalo."], ["abdutora", "Cadeira abdutora", "3×20", "Abra os joelhos e retorne com controle."], ["abdomen", "Abdominal", "3×15", "Contraia o abdômen e mantenha o pescoço relaxado."]]}};</script>
-<script src="app.js?v=6"></script>
+<script src="app.js?v=coliseu3"></script>
 </body>
 </html>
