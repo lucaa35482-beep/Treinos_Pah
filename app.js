@@ -84,6 +84,173 @@ function renderAll(){
   renderDay();
   renderProgress();
 }
+
+let currentView="treino";
+
+function allStats(){
+  let total=0,done=0;
+  const byDay={};
+  DAYS.forEach(day=>{
+    const w=workouts[day];
+    const d=w.exercises.filter((_,i)=>isDone(day,i)).length;
+    byDay[day]={done:d,total:w.exercises.length,pct:Math.round((d/w.exercises.length)*100)};
+    total+=w.exercises.length; done+=d;
+  });
+  return {total,done,pct:Math.round((done/total)*100),byDay};
+}
+
+function setActiveBottomNav(view){
+  document.querySelectorAll(".nav-btn").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.view===view);
+  });
+}
+
+function showTreino(){
+  currentView="treino";
+  setActiveBottomNav("treino");
+  document.querySelector("#navView").classList.add("hidden");
+  document.querySelector("#tabs").classList.remove("hidden");
+  document.querySelector("#dayContent").classList.remove("hidden");
+  document.querySelector(".summary").classList.remove("hidden");
+  initBottomNav();
+renderAll();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function showProgress(){
+  currentView="progresso";
+  setActiveBottomNav("progresso");
+  document.querySelector("#tabs").classList.add("hidden");
+  document.querySelector("#dayContent").classList.add("hidden");
+  document.querySelector(".summary").classList.add("hidden");
+
+  const s=allStats();
+  const view=document.querySelector("#navView");
+  view.classList.remove("hidden");
+  view.innerHTML=`
+    <section class="page-card card">
+      <p class="eyebrow">PROGRESSO</p>
+      <h2>Seu progresso semanal</h2>
+      <div class="big-progress">${s.pct}%</div>
+      <div class="progress"><span style="width:${s.pct}%"></span></div>
+      <p class="muted">${s.done} de ${s.total} exercícios concluídos nesta semana.</p>
+    </section>
+    <div class="stats-grid">
+      ${DAYS.map(day=>`
+        <button class="day-stat card" data-go-day="${day}" type="button">
+          <strong>${workouts[day].label}</strong>
+          <span>${s.byDay[day].done}/${s.byDay[day].total}</span>
+          <div class="mini-progress"><i style="width:${s.byDay[day].pct}%"></i></div>
+          <small>${s.byDay[day].pct}% concluído</small>
+        </button>`).join("")}
+    </div>`;
+  view.querySelectorAll("[data-go-day]").forEach(btn=>{
+    btn.onclick=()=>{
+      activeDay=btn.dataset.goDay;
+      showTreino();
+    };
+  });
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function showWeek(){
+  currentView="semana";
+  setActiveBottomNav("semana");
+  document.querySelector("#tabs").classList.add("hidden");
+  document.querySelector("#dayContent").classList.add("hidden");
+  document.querySelector(".summary").classList.add("hidden");
+
+  const s=allStats();
+  const view=document.querySelector("#navView");
+  view.classList.remove("hidden");
+  view.innerHTML=`
+    <section class="page-card card">
+      <p class="eyebrow">SEMANA</p>
+      <h2>${weekRange()}</h2>
+      <p class="muted">Toque em um dia para abrir o treino.</p>
+    </section>
+    <div class="week-list">
+      ${DAYS.map(day=>{
+        const st=s.byDay[day];
+        return `<button class="week-row card" data-week-day="${day}" type="button">
+          <div>
+            <strong>${workouts[day].label}</strong>
+            <span>${workouts[day].subtitle}</span>
+          </div>
+          <div class="week-row-right">
+            <b>${st.done}/${st.total}</b>
+            <small>${st.pct}%</small>
+          </div>
+        </button>`;
+      }).join("")}
+    </div>`;
+  view.querySelectorAll("[data-week-day]").forEach(btn=>{
+    btn.onclick=()=>{
+      activeDay=btn.dataset.weekDay;
+      showTreino();
+    };
+  });
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function showCompleted(){
+  currentView="concluidos";
+  setActiveBottomNav("concluidos");
+  document.querySelector("#tabs").classList.add("hidden");
+  document.querySelector("#dayContent").classList.add("hidden");
+  document.querySelector(".summary").classList.add("hidden");
+
+  const completed=[];
+  DAYS.forEach(day=>{
+    workouts[day].exercises.forEach((ex,i)=>{
+      if(isDone(day,i)) completed.push({day,ex,i});
+    });
+  });
+
+  const view=document.querySelector("#navView");
+  view.classList.remove("hidden");
+  view.innerHTML=`
+    <section class="page-card card">
+      <p class="eyebrow">CONCLUÍDOS</p>
+      <h2>Exercícios finalizados</h2>
+      <p class="muted">${completed.length ? `${completed.length} exercício(s) concluído(s) nesta semana.` : "Você ainda não marcou nenhum exercício como concluído."}</p>
+    </section>
+    <div class="completed-list">
+      ${completed.length ? completed.map(item=>`
+        <button class="completed-row card" data-complete-day="${item.day}" type="button">
+          <span class="done-badge">✓</span>
+          <div>
+            <strong>${item.ex[1]}</strong>
+            <small>${workouts[item.day].label} • ${item.ex[2]}</small>
+          </div>
+        </button>`).join("") : `
+        <div class="empty-state card">
+          <div>💪</div>
+          <strong>Comece o treino</strong>
+          <span>Os exercícios que você concluir aparecerão aqui.</span>
+        </div>`}
+    </div>`;
+  view.querySelectorAll("[data-complete-day]").forEach(btn=>{
+    btn.onclick=()=>{
+      activeDay=btn.dataset.completeDay;
+      showTreino();
+    };
+  });
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function initBottomNav(){
+  document.querySelectorAll(".nav-btn").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const view=btn.dataset.view;
+      if(view==="treino") showTreino();
+      if(view==="progresso") showProgress();
+      if(view==="semana") showWeek();
+      if(view==="concluidos") showCompleted();
+    });
+  });
+}
+
 function toast(msg){const t=document.querySelector("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove("show"),1700)}
 
 document.querySelector("#resetBtn").onclick=()=>{if(confirm("Apagar todo o progresso desta semana?")){state=initialState();save();renderAll();toast("Semana resetada")}}
