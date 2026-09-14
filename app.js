@@ -1,7 +1,48 @@
 
 const DAYS=["segunda","terca","quarta","quinta","sexta"];
 const workouts=window.WORKOUTS;
-const EXERCISE_IMAGES={"elevacao-pelvica": "https://static.strengthlevel.com/images/exercises/hip-thrust/hip-thrust-800.jpg", "flexora": "https://static.strengthlevel.com/images/exercises/lying-leg-curl/lying-leg-curl-800.jpg", "stiff": "https://static.strengthlevel.com/images/exercises/dumbbell-romanian-deadlift/dumbbell-romanian-deadlift-800.jpg", "leg-press": "https://static.strengthlevel.com/images/exercises/sled-leg-press/sled-leg-press-800.jpg", "abdutora": "https://static.strengthlevel.com/images/exercises/hip-abduction/hip-abduction-800.jpg", "gluteo-cabo": "https://static.strengthlevel.com/images/exercises/glute-kickback/glute-kickback-800.jpg", "agachamento-smith": "https://static.strengthlevel.com/images/exercises/smith-machine-squat/smith-machine-squat-800.jpg", "cadeira-extensora": "https://static.strengthlevel.com/images/exercises/leg-extension/leg-extension-800.jpg", "passada": "https://static.strengthlevel.com/images/exercises/dumbbell-lunge/dumbbell-lunge-800.jpg", "panturrilha": "https://static.strengthlevel.com/images/exercises/standing-calf-raise/standing-calf-raise-800.jpg", "puxada-frente": "https://static.strengthlevel.com/images/exercises/lat-pulldown/lat-pulldown-800.jpg", "remada": "https://static.strengthlevel.com/images/exercises/seated-cable-row/seated-cable-row-800.jpg", "supino": "https://static.strengthlevel.com/images/exercises/chest-press/chest-press-800.jpg", "elevacao-lateral": "https://static.strengthlevel.com/images/exercises/dumbbell-lateral-raise/dumbbell-lateral-raise-800.jpg", "rosca-biceps": "https://static.strengthlevel.com/images/exercises/dumbbell-curl/dumbbell-curl-800.jpg", "triceps": "https://static.strengthlevel.com/images/exercises/tricep-pushdown/tricep-pushdown-800.jpg", "abdomen": "https://static.strengthlevel.com/images/exercises/sit-ups/sit-ups-800.jpg"};
+const EXERCISE_IMAGES={
+"elevacao-pelvica":"https://static.strengthlevel.com/images/exercises/hip-thrust/hip-thrust-800.jpg",
+"flexora":"https://static.strengthlevel.com/images/exercises/lying-leg-curl/lying-leg-curl-800.jpg",
+"stiff":"https://static.strengthlevel.com/images/exercises/dumbbell-romanian-deadlift/dumbbell-romanian-deadlift-800.jpg",
+"leg-press":"https://static.strengthlevel.com/images/exercises/sled-leg-press/sled-leg-press-800.jpg",
+"abdutora":"https://static.strengthlevel.com/images/exercises/hip-abduction/hip-abduction-800.jpg",
+"gluteo-cabo":"https://static.strengthlevel.com/images/exercises/glute-kickback/glute-kickback-800.jpg",
+"agachamento-smith":"https://static.strengthlevel.com/images/exercises/smith-machine-squat/smith-machine-squat-800.jpg",
+"cadeira-extensora":"https://static.strengthlevel.com/images/exercises/leg-extension/leg-extension-800.jpg",
+"passada":"https://static.strengthlevel.com/images/exercises/dumbbell-lunge/dumbbell-lunge-800.jpg",
+"panturrilha":"https://static.strengthlevel.com/images/exercises/standing-calf-raise/standing-calf-raise-800.jpg",
+"puxada-frente":"https://static.strengthlevel.com/images/exercises/lat-pulldown/lat-pulldown-800.jpg",
+"remada":"https://static.strengthlevel.com/images/exercises/seated-cable-row/seated-cable-row-800.jpg",
+"supino":"https://static.strengthlevel.com/images/exercises/chest-press/chest-press-800.jpg",
+"elevacao-lateral":"https://static.strengthlevel.com/images/exercises/dumbbell-lateral-raise/dumbbell-lateral-raise-800.jpg",
+"rosca-biceps":"https://static.strengthlevel.com/images/exercises/dumbbell-curl/dumbbell-curl-800.jpg",
+"triceps":"https://static.strengthlevel.com/images/exercises/tricep-pushdown/tricep-pushdown-800.jpg",
+"abdomen":"https://static.strengthlevel.com/images/exercises/sit-ups/sit-ups-800.jpg"
+};
+
+const VIDEO_MATCHES={
+"elevacao-pelvica":["hip thrust","lever hip thrust","bridge pose"],
+"flexora":["lever seated leg curl","lever lying leg curl","leg curl","band prone leg curl"],
+"stiff":["dumbbell romanian deadlift","dumbbell straight leg deadlift","barbell straight leg deadlift","dumbbell deadlift"],
+"leg-press":["leg press","close feet leg press"],
+"abdutora":["hip abduction","band hip abduction"],
+"gluteo-cabo":["cable glute kickback","glute kickback","lever standing rear kick","band one-leg kickback"],
+"agachamento-smith":["smith squat","smith machine squat","squat","barbell back squat"],
+"cadeira-extensora":["leg extension","lever leg extension","band seated leg extension"],
+"passada":["dumbbell lunge","barbell lunge","lunge"],
+"panturrilha":["lever standing calf raise","standing calf raise","dumbbell standing calf raise","band standing calf raise"],
+"puxada-frente":["cable pulldown","lat pulldown","cable close grip lat pulldown"],
+"remada":["seated row","cable seated row","band seated row","cable one-arm twisting seated row"],
+"supino":["chest press","lever chest press","barbell bench press"],
+"elevacao-lateral":["dumbbell lateral raise","cable lateral raise","lateral raise"],
+"rosca-biceps":["dumbbell biceps curl","barbell curl","cable one arm curl"],
+"triceps":["cable triceps pushdown","cable rope triceps pushdown","band triceps pushdown","triceps pushdown"],
+"abdomen":["bench crunch","sit-up","sit up","cable kneeling crunch","crunch"]
+};
+
+const EXERCISE_API="https://exercise-database.zenithfits.com/api/v1/exercises?limit=317";
+let EXERCISE_DB=[];
 const STORAGE_KEY="treinosPah_v2";
 let deferredPrompt=null;
 
@@ -35,6 +76,96 @@ function renderTabs(){
   el.innerHTML=DAYS.map(d=>`<button class="tab ${d===activeDay?"active":""}" data-day="${d}">${workouts[d].short}</button>`).join("");
   el.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{activeDay=b.dataset.day;renderAll();window.scrollTo({top:0,behavior:"smooth"})});
 }
+
+function normalizeText(s){
+  return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
+}
+function findVideoFor(key){
+  if(!EXERCISE_DB.length) return null;
+  const candidates=VIDEO_MATCHES[key]||[];
+  for(const candidate of candidates){
+    const target=normalizeText(candidate);
+    let exact=EXERCISE_DB.find(x=>normalizeText(x.name)===target);
+    if(exact) return exact;
+    let contains=EXERCISE_DB.find(x=>normalizeText(x.name).includes(target));
+    if(contains) return contains;
+  }
+  return null;
+}
+function getVideoUrl(item){
+  if(!item) return null;
+  const videos=item.videos||{};
+  return videos.female || videos.male || null;
+}
+function getPoster(item){
+  if(!item) return null;
+  const thumbs=item.thumbnails||{};
+  return thumbs.female || thumbs.male || null;
+}
+function hydrateVideos(){
+  document.querySelectorAll(".exercise-media").forEach(box=>{
+    const key=box.dataset.exercise;
+    const item=findVideoFor(key);
+    const url=getVideoUrl(item);
+    if(!url) {
+      const loading=box.querySelector(".video-loading");
+      if(loading) loading.textContent="Imagem demonstrativa";
+      return;
+    }
+    if(box.querySelector("video")) return;
+    const poster=getPoster(item) || EXERCISE_IMAGES[key] || "";
+    const video=document.createElement("video");
+    video.className="exercise-video";
+    video.src=url;
+    video.poster=poster;
+    video.muted=true;
+    video.loop=true;
+    video.autoplay=true;
+    video.playsInline=true;
+    video.preload="metadata";
+    video.setAttribute("webkit-playsinline","");
+    video.setAttribute("aria-label",`Vídeo demonstrando ${item.name||"o exercício"}`);
+    video.addEventListener("canplay",()=>{
+      const img=box.querySelector(".fallback-img");
+      const loading=box.querySelector(".video-loading");
+      if(img) img.classList.add("hidden-media");
+      if(loading) loading.classList.add("hidden-media");
+    });
+    video.addEventListener("error",()=>{
+      video.remove();
+      const loading=box.querySelector(".video-loading");
+      if(loading) loading.textContent="Imagem demonstrativa";
+    });
+    box.insertBefore(video,box.firstChild);
+  });
+}
+async function loadExerciseVideos(){
+  const cacheKey="treinosPah_exerciseDb_v1";
+  try{
+    const cached=localStorage.getItem(cacheKey);
+    if(cached){
+      const parsed=JSON.parse(cached);
+      if(parsed && Array.isArray(parsed.data) && Date.now()-parsed.savedAt<7*24*60*60*1000){
+        EXERCISE_DB=parsed.data;
+        hydrateVideos();
+        return;
+      }
+    }
+  }catch(e){}
+  try{
+    const res=await fetch(EXERCISE_API,{mode:"cors"});
+    if(!res.ok) throw new Error("API indisponível");
+    const payload=await res.json();
+    EXERCISE_DB=Array.isArray(payload.data)?payload.data:(Array.isArray(payload)?payload:[]);
+    if(EXERCISE_DB.length){
+      try{localStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),data:EXERCISE_DB}))}catch(e){}
+      hydrateVideos();
+    }
+  }catch(e){
+    document.querySelectorAll(".video-loading").forEach(el=>el.textContent="Imagem demonstrativa");
+  }
+}
+
 function renderDay(){
   const w=workouts[activeDay], total=w.exercises.length, done=w.exercises.filter((_,i)=>isDone(activeDay,i)).length;
   document.querySelector("#dayContent").innerHTML=`
@@ -51,7 +182,11 @@ function renderDay(){
     <div class="exercise-list">
     ${w.exercises.map((ex,i)=>`
       <article class="exercise card ${isDone(activeDay,i)?"done":""}">
-        <div class="exercise-image"><img src="${EXERCISE_IMAGES[ex[0]]}" alt="Como fazer ${ex[1]}" loading="lazy" referrerpolicy="no-referrer"><span class="img-credit">Imagem: Strength Level</span></div>
+        <div class="exercise-media" data-exercise="${ex[0]}">
+          <img class="fallback-img" src="${EXERCISE_IMAGES[ex[0]]}" alt="Como fazer ${ex[1]}" loading="lazy" referrerpolicy="no-referrer">
+          <div class="video-loading">▶ Carregando demonstração...</div>
+          <span class="img-credit">Demonstração do exercício</span>
+        </div>
         <div class="exercise-body">
           <div class="exercise-top">
             <div><h3 class="exercise-title">${ex[1]}</h3><div class="reps">${ex[2]}</div></div>
@@ -65,6 +200,7 @@ function renderDay(){
       <div><strong>${done===total?"Treino finalizado! 🎉":"Continue firme 💪"}</strong><div class="muted">${done===total?"O progresso ficou salvo neste aparelho.":"Você pode fechar e voltar depois."}</div></div>
       <div class="pct">${Math.round(done/total*100)}%</div>
     </section>`;
+  hydrateVideos();
   document.querySelectorAll(".check").forEach(b=>b.onclick=()=>{
     const i=Number(b.dataset.i), k=itemKey(activeDay,i);
     state.done[k]=!state.done[k];save();renderAll();if(state.done[k])toast("Exercício concluído ✓");
@@ -104,3 +240,4 @@ if("serviceWorker" in navigator){
   window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 }
 renderAll();
+loadExerciseVideos();
