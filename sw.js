@@ -1,5 +1,5 @@
 
-const CACHE="treinos-pah-coliseu-nav1";
+const CACHE="treinos-pah-limpo-v1";
 const SHELL=[
   "./","./index.html","./style.css","./app.js","./manifest.webmanifest",
   "./icon-192.png","./icon-512.png"

@@ -112,8 +112,7 @@ function showTreino(){
   document.querySelector("#tabs").classList.remove("hidden");
   document.querySelector("#dayContent").classList.remove("hidden");
   document.querySelector(".summary").classList.remove("hidden");
-  initBottomNav();
-renderAll();
+  renderAll();
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
