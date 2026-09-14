@@ -77,7 +77,13 @@ function renderProgress(){
   document.querySelector("#progressText").textContent=`${p}% concluído • ${done}/${total}`;
   document.querySelector("#progressBar").style.width=`${p}%`;
 }
-function renderAll(){document.querySelector("#weekLabel").textContent=weekRange();renderTabs();renderDay();renderProgress()}
+function renderAll(){
+  const weekLabel=document.querySelector("#weekLabel");
+  if(weekLabel) weekLabel.textContent=weekRange();
+  renderTabs();
+  renderDay();
+  renderProgress();
+}
 function toast(msg){const t=document.querySelector("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove("show"),1700)}
 
 document.querySelector("#resetBtn").onclick=()=>{if(confirm("Apagar todo o progresso desta semana?")){state=initialState();save();renderAll();toast("Semana resetada")}}
