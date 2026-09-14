@@ -1,6 +1,7 @@
 
 const DAYS=["segunda","terca","quarta","quinta","sexta"];
 const workouts=window.WORKOUTS;
+const EXERCISE_IMAGES={"agachamento": "https://static.strengthlevel.com/images/exercises/squat/squat-800.jpg", "leg-press": "https://static.strengthlevel.com/images/exercises/sled-leg-press/sled-leg-press-800.jpg", "cadeira-extensora": "https://static.strengthlevel.com/images/exercises/leg-extension/leg-extension-800.jpg", "flexora": "https://static.strengthlevel.com/images/exercises/lying-leg-curl/lying-leg-curl-800.jpg", "elevacao-pelvica": "https://static.strengthlevel.com/images/exercises/hip-thrust/hip-thrust-800.jpg", "abdutora": "https://static.strengthlevel.com/images/exercises/hip-abduction/hip-abduction-800.jpg", "puxada-frente": "https://static.strengthlevel.com/images/exercises/lat-pulldown/lat-pulldown-800.jpg", "remada": "https://static.strengthlevel.com/images/exercises/seated-cable-row/seated-cable-row-800.jpg", "supino": "https://static.strengthlevel.com/images/exercises/bench-press/bench-press-800.jpg", "elevacao-lateral": "https://static.strengthlevel.com/images/exercises/dumbbell-lateral-raise/dumbbell-lateral-raise-800.jpg", "rosca-biceps": "https://static.strengthlevel.com/images/exercises/dumbbell-curl/dumbbell-curl-800.jpg", "triceps": "https://static.strengthlevel.com/images/exercises/tricep-pushdown/tricep-pushdown-800.jpg", "passada": "https://static.strengthlevel.com/images/exercises/walking-lunge/walking-lunge-800.jpg", "desenvolvimento": "https://static.strengthlevel.com/images/exercises/shoulder-press/shoulder-press-800.jpg", "abdomen": "https://static.strengthlevel.com/images/exercises/sit-ups/sit-ups-800.jpg"};
 const STORAGE_KEY="treinosPah_v2";
 let deferredPrompt=null;
 
@@ -50,7 +51,7 @@ function renderDay(){
     <div class="exercise-list">
     ${w.exercises.map((ex,i)=>`
       <article class="exercise card ${isDone(activeDay,i)?"done":""}">
-        <div class="exercise-image"><img src="images/${ex[0]}.svg" alt="Como fazer ${ex[1]}"></div>
+        <div class="exercise-image"><img src="${EXERCISE_IMAGES[ex[0]]}" alt="Como fazer ${ex[1]}" loading="lazy" referrerpolicy="no-referrer"><span class="img-credit">Imagem: Strength Level</span></div>
         <div class="exercise-body">
           <div class="exercise-top">
             <div><h3 class="exercise-title">${ex[1]}</h3><div class="reps">${ex[2]}</div></div>

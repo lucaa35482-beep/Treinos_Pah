@@ -34,3 +34,7 @@ No Chrome, o botão `Instalar app` aparecerá quando o navegador permitir a inst
 Abra no Safari > Compartilhar > Adicionar à Tela de Início.
 
 Observação: as ilustrações são educativas e simplificadas; a execução correta deve respeitar orientação profissional quando necessário.
+
+
+## Imagens dos exercícios
+Nesta versão, os cartões usam as imagens demonstrativas hospedadas pelo Strength Level para os exercícios correspondentes, com crédito visível no aplicativo. As imagens são carregadas pela internet e o navegador tenta armazená-las em cache depois de visualizadas.

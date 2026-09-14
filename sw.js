@@ -1,14 +1,31 @@
 
-const CACHE="treinos-pah-v2";
-const ASSETS=[
+const CACHE="treinos-pah-v3-strengthlevel";
+const SHELL=[
   "./","./index.html","./style.css","./app.js","./manifest.webmanifest",
-  "./icon-192.png","./icon-512.png",
-  "./images/agachamento.svg","./images/leg-press.svg","./images/cadeira-extensora.svg",
-  "./images/flexora.svg","./images/elevacao-pelvica.svg","./images/abdutora.svg",
-  "./images/puxada-frente.svg","./images/remada.svg","./images/supino.svg",
-  "./images/elevacao-lateral.svg","./images/rosca-biceps.svg","./images/triceps.svg",
-  "./images/passada.svg","./images/desenvolvimento.svg","./images/abdomen.svg"
+  "./icon-192.png","./icon-512.png"
 ];
-self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
-self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));
-self.addEventListener("fetch",e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
+self.addEventListener("install",e=>{
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)));
+  self.skipWaiting();
+});
+self.addEventListener("activate",e=>{
+  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener("fetch",e=>{
+  const req=e.request;
+  if(req.destination==="image"){
+    e.respondWith(
+      caches.match(req).then(cached=>{
+        const fresh=fetch(req).then(res=>{
+          const copy=res.clone();
+          caches.open(CACHE).then(c=>c.put(req,copy)).catch(()=>{});
+          return res;
+        }).catch(()=>cached);
+        return cached || fresh;
+      })
+    );
+    return;
+  }
+  e.respondWith(caches.match(req).then(r=>r||fetch(req)));
+});
