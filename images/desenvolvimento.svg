@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420">
+<defs>
+  <linearGradient id="bg" x1="0" x2="1">
+    <stop offset="0" stop-color="#101827"/>
+    <stop offset="1" stop-color="#1f2937"/>
+  </linearGradient>
+</defs>
+<rect width="720" height="420" rx="28" fill="url(#bg)"/>
+<text x="34" y="52" fill="#ffffff" font-family="Arial" font-size="28" font-weight="700">Desenvolvimento de ombros</text>
+<text x="34" y="82" fill="#a7f3d0" font-family="Arial" font-size="15">Demonstração visual • início → movimento</text>
+<g transform="translate(55,110)">
+  <rect x="0" y="0" width="270" height="250" rx="22" fill="#ffffff" opacity=".07"/>
+  <rect x="340" y="0" width="270" height="250" rx="22" fill="#ffffff" opacity=".07"/>
+  <text x="20" y="32" fill="#cbd5e1" font-family="Arial" font-size="14">INÍCIO</text>
+  <text x="360" y="32" fill="#cbd5e1" font-family="Arial" font-size="14">MOVIMENTO</text>
+  <!-- left pose -->
+  <circle cx="135" cy="80" r="22" fill="#f8fafc"/>
+  <line x1="135" y1="102" x2="135" y2="164" stroke="#f8fafc" stroke-width="12" stroke-linecap="round"/>
+  <line x1="135" y1="122" x2="95" y2="145" stroke="#f8fafc" stroke-width="10" stroke-linecap="round"/>
+  <line x1="135" y1="122" x2="175" y2="145" stroke="#f8fafc" stroke-width="10" stroke-linecap="round"/>
+  <line x1="135" y1="162" x2="108" y2="215" stroke="#f8fafc" stroke-width="11" stroke-linecap="round"/>
+  <line x1="135" y1="162" x2="162" y2="215" stroke="#f8fafc" stroke-width="11" stroke-linecap="round"/>
+  <!-- right pose varies slightly -->
+  <circle cx="475" cy="88" r="22" fill="#f8fafc"/>
+  <line x1="475" y1="110" x2="460" y2="168" stroke="#f8fafc" stroke-width="12" stroke-linecap="round"/>
+  <line x1="468" y1="128" x2="422" y2="112" stroke="#a7f3d0" stroke-width="10" stroke-linecap="round"/>
+  <line x1="468" y1="128" x2="515" y2="112" stroke="#a7f3d0" stroke-width="10" stroke-linecap="round"/>
+  <line x1="460" y1="167" x2="422" y2="205" stroke="#f8fafc" stroke-width="11" stroke-linecap="round"/>
+  <line x1="460" y1="167" x2="500" y2="205" stroke="#f8fafc" stroke-width="11" stroke-linecap="round"/>
+  <path d="M315 125 l22 0 l-8 -8 m8 8 l-8 8" stroke="#a7f3d0" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="34" y="395" fill="#94a3b8" font-family="Arial" font-size="13">Use carga confortável e priorize a execução correta.</text>
+</svg>
