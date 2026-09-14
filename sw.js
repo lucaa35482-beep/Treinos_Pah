@@ -1,5 +1,5 @@
 
-const CACHE="treinos-pah-v3-strengthlevel";
+const CACHE="treinos-pah-v4-novo-treino";
 const SHELL=[
   "./","./index.html","./style.css","./app.js","./manifest.webmanifest",
   "./icon-192.png","./icon-512.png"
